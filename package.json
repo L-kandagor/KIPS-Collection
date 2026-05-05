@@ -1,0 +1,12 @@
+{
+  "name": "kips-collection",
+  "version": "1.0.0",
+  "description": "KIPS Collection frontend with local Node API for products and cart.",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

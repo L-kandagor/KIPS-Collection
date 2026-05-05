@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up - KIPS Collection</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <div class="logo">KIPS</div>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="products.html">Shop</a></li>
+        <li><a href="cart.html"><i class="fas fa-shopping-bag cart-icon" id="cartIcon"></i></a></li>
+        <li><a href="login.html">Login</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Signup Form -->
+  <section class="section">
+    <div class="container">
+      <div class="grid grid-2">
+        <div class="fade-in">
+          <h2>Join KIPS</h2>
+          <p class="text-secondary" style="color: var(--text-secondary);">Create your account</p>
+          
+          <form id="signupForm" class="card" style="max-width: 400px; padding: 2rem;">
+            <div class="form-group">
+              <label for="name">Full Name</label>
+              <input type="text" id="name" required>
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" required>
+            </div>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" id="password" required minlength="6">
+            </div>
+            <button type="submit" class="btn btn-primary w-full">Create Account</button>
+          </form>
+          
+          <p style="text-align: center; margin-top: 1rem; color: var(--text-secondary);">
+            Already have an account? <a href="login.html">Login here</a>
+          </p>
+        </div>
+        <div style="background: linear-gradient(135deg, var(--accent), var(--primary)); padding: 3rem; border-radius: var(--radius); text-align: center;">
+          <i class="fas fa-user-plus" style="font-size: 4rem; color: white; margin-bottom: 1rem;"></i>
+          <h3>Join 10K+ Students</h3>
+          <p style="color: rgba(255,255,255,0.9);">Be part of the KIPS community</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="js/main.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/cart.js"></script>
+  <script>
+    document.getElementById('signupForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      
+      try {
+        await signupUser(name, email, password);
+        alert('Account created successfully! Please login.');
+        window.location.href = 'login.html';
+      } catch (error) {
+        alert(error.message);
+      }
+    });
+  </script>
+</body>
+</html>

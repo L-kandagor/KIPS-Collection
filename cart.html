@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cart - KIPS Collection</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <div class="logo">KIPS</div>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="products.html">Shop</a></li>
+        <li><a href="#" class="active"><i class="fas fa-shopping-bag cart-icon"></i></a></li>
+        <li><a href="login.html"><i class="fas fa-user user-icon"></i></a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Cart Page -->
+  <section class="section">
+    <div class="container">
+      <h1 class="fade-in">Your Cart</h1>
+      
+      <div class="grid grid-2" style="gap: 3rem;">
+        <!-- Cart Items -->
+        <div class="fade-in">
+          <div class="card" style="padding: 2rem;">
+            <table class="cart-table" id="cartTable">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Price</th>
+                  <th>Quantity</th>
+                  <th>Total</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="cartItems">
+                <!-- Cart items loaded by JS -->
+              </tbody>
+            </table>
+            
+            <div style="text-align: center; margin-top: 2rem;">
+              <a href="products.html" class="btn btn-outline">Continue Shopping</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="fade-in">
+          <div class="card" style="padding: 2rem;">
+            <h3>Order Summary</h3>
+            <div style="display: flex; justify-content: space-between; margin: 1rem 0; font-size: 1.2rem;">
+              <span>Total Items:</span>
+              <span id="cartItemCount">0</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin: 1rem 0; font-size: 1.5rem; font-weight: 700; color: var(--accent);">
+              <span>Total:</span>
+              <span id="cartTotal">KES 0.00</span>
+            </div>
+            <button class="btn btn-primary w-full" id="checkoutBtn" style="margin-top: 1rem;">
+              Proceed to Checkout
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="js/main.js"></script>
+  <script src="js/cart.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadCart();
+      updateCartCount();
+      
+      document.getElementById('checkoutBtn').addEventListener('click', async () => {
+        const total = parseFloat(document.getElementById('cartTotal').textContent.replace('$', ''));
+        try {
+          await fetch('/api/orders', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ total })
+          });
+          alert('Order placed successfully!');
+          window.location.href = 'index.html';
+        } catch (error) {
+          alert('Error placing order');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

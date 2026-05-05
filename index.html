@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KIPS Collection - Trendy Fashion for College Life</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/home.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <div class="logo">KIPS</div>
+      <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="products.html">Shop</a></li>
+        <li><a href="cart.html"><i class="fas fa-shopping-bag cart-icon" id="cartIcon"></i></a></li>
+        <li><a href="login.html" class="user-icon"><i class="fas fa-user"></i></a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero" id="home">
+    <div class="container">
+      <div class="hero-content fade-in">
+        <h1>Kenyan Style Reimagined</h1>
+        <p>Luxury meets city life. Discover fresh looks in Kenyan shillings.</p>
+        <a href="products.html" class="btn btn-primary btn-sm">Shop Now</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Categories -->
+  <section class="categories">
+    <div class="container">
+      <h2 class="section-title fade-in">
+        <span>Shop by Category</span>
+      </h2>
+      <div class="grid grid-3">
+        <a href="products.html?category=men" class="category-card category-men fade-in">
+          <h3>Men</h3>
+          <p>Classic and modern looks for him</p>
+        </a>
+        <a href="products.html?category=women" class="category-card category-women fade-in">
+          <h3>Women</h3>
+          <p>Fresh styles for every occasion</p>
+        </a>
+        <a href="products.html?category=bags" class="category-card category-bags fade-in">
+          <h3>Bags</h3>
+          <p>Functional fashion accessories</p>
+        </a>
+        <a href="products.html?category=shoes" class="category-card category-shoes fade-in">
+          <h3>Shoes</h3>
+          <p>Step up your look with premium footwear</p>
+        </a>
+        <a href="products.html?category=accessories" class="category-card category-accessories fade-in">
+          <h3>Accessories</h3>
+          <p>Complete your outfit with bold finishing touches</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Products -->
+  <section class="featured">
+    <div class="container">
+      <h2 class="section-title fade-in">Featured Collection</h2>
+      <div class="grid grid-4" id="featuredProducts">
+        <!-- Products loaded by JavaScript -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter -->
+  <section class="newsletter">
+    <div class="container">
+      <h3 class="fade-in">Get 10% Off Your First Order</h3>
+      <p>Join 10,000+ students who love KIPS Collection</p>
+      <form class="newsletter-form fade-in">
+        <input type="email" class="newsletter-input form-group input" placeholder="Enter your email">
+        <button type="submit" class="btn btn-primary">Subscribe</button>
+      </form>
+    </div>
+  </section>
+
+  <script src="js/main.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/products.js"></script>
+  <script>
+    // Load featured products on homepage
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadFeaturedProducts();
+      updateCartCount();
+    });
+
+    async function loadFeaturedProducts() {
+      try {
+        const response = await fetch('/api/products');
+        const products = await response.json();
+        const featured = products.slice(0, 8);
+        
+        const container = document.getElementById('featuredProducts');
+        container.innerHTML = featured.map(product => createProductCard(product)).join('');
+      } catch (error) {
+        console.error('Error loading featured products:', error);
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,126 @@
+/* Homepage Specific Styles */
+
+/* Featured Categories */
+.categories {
+  background: linear-gradient(135deg, var(--surface), var(--surface-light));
+  padding: 4rem 0;
+}
+
+.category-card {
+  height: 300px;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 2rem;
+  border-radius: var(--radius);
+  position: relative;
+  overflow: hidden;
+}
+
+.category-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, transparent, rgba(0,0,0,0.8));
+}
+
+.category-card h3 {
+  position: relative;
+  z-index: 2;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.category-card p {
+  position: relative;
+  z-index: 2;
+  margin-bottom: 2rem;
+}
+
+/* Category Backgrounds */
+.category-men {
+  background-image: linear-gradient(rgba(199,21,133,0.3), rgba(199,21,133,0.3)),
+                    url('https://images.unsplash.com/photo-1521334884684-d80222895322?w=600&h=400&fit=crop');
+}
+
+.category-women {
+  background-image: linear-gradient(rgba(212,175,55,0.3), rgba(212,175,55,0.3)),
+                    url('https://images.unsplash.com/photo-1520975915824-445fca094479?w=600&h=400&fit=crop');
+}
+
+.category-bags {
+  background-image: linear-gradient(rgba(20,20,20,0.3), rgba(20,20,20,0.3)),
+                    url('https://images.unsplash.com/photo-1512436991641-6745cdb1723f?w=600&h=400&fit=crop');
+}
+
+.category-shoes {
+  background-image: linear-gradient(rgba(10,10,10,0.3), rgba(10,10,10,0.3)),
+                    url('https://images.unsplash.com/photo-1519741494781-8d7d5a2487c2?w=600&h=400&fit=crop');
+}
+
+.category-accessories {
+  background-image: linear-gradient(rgba(212,175,55,0.3), rgba(212,175,55,0.3)),
+                    url('https://images.unsplash.com/photo-1512314889357-e157c22f938d?w=600&h=400&fit=crop');
+}
+
+/* Featured Products */
+.featured {
+  background: var(--background);
+}
+
+.featured .section-title {
+  margin-bottom: 3rem;
+}
+
+/* Newsletter */
+.newsletter {
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  text-align: center;
+  padding: 4rem 0;
+}
+
+.newsletter h3 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: white;
+}
+
+.newsletter p {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  color: rgba(255,255,255,0.9);
+}
+
+.newsletter-form {
+  max-width: 500px;
+  margin: 0 auto;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.newsletter-input {
+  flex: 1;
+  min-width: 250px;
+}
+
+/* Responsive for homepage */
+@media (max-width: 768px) {
+  .category-card {
+    height: 250px;
+    padding: 1.5rem;
+  }
+  
+  .category-card h3 {
+    font-size: 1.5rem;
+  }
+  
+  .newsletter-form {
+    flex-direction: column;
+  }
+}

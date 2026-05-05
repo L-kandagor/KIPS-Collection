@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Products - KIPS Collection</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <div class="logo">KIPS</div>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="#" class="active">Shop</a></li>
+        <li><a href="cart.html"><i class="fas fa-shopping-bag cart-icon" id="cartIcon"></i></a></li>
+        <li><a href="login.html"><i class="fas fa-user user-icon"></i></a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Products Page -->
+  <section class="section">
+    <div class="container">
+      <!-- Filters -->
+      <div class="filters">
+        <input type="text" id="searchInput" class="search-box form-group input" placeholder="Search products...">
+        <button class="filter-btn active" data-category="all">All</button>
+        <button class="filter-btn" data-category="men">Men</button>
+        <button class="filter-btn" data-category="women">Women</button>
+        <button class="filter-btn" data-category="bags">Bags</button>
+        <button class="filter-btn" data-category="shoes">Shoes</button>
+        <button class="filter-btn" data-category="accessories">Accessories</button>
+      </div>
+
+      <!-- Products Grid -->
+      <div class="grid grid-4" id="productsGrid">
+        <!-- Products loaded by JavaScript -->
+      </div>
+    </div>
+  </section>
+
+  <script src="js/main.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/products.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadProducts();
+      setupFilters();
+      updateCartCount();
+      
+      // Filter buttons
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelector('.filter-btn.active').classList.remove('active');
+          btn.classList.add('active');
+          const category = btn.dataset.category;
+          loadProducts(category);
+        });
+      });
+
+      // Search
+      document.getElementById('searchInput').addEventListener('input', (e) => {
+        loadProducts(null, e.target.value);
+      });
+    });
+  </script>
+</body>
+</html>

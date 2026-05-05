@@ -1,0 +1,57 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Nairobi Street Shirt",
+      "price": 1850.0,
+      "originalPrice": 2400.0,
+      "discount": 23,
+      "category": "men",
+      "image": "https://images.unsplash.com/photo-1521334884684-d80222895322?w=800&h=800&fit=crop",
+      "description": "A bold shirt with a clean cut for everyday Nairobi style."
+    },
+    {
+      "id": 2,
+      "name": "Mombasa Midi Dress",
+      "price": 3200.0,
+      "originalPrice": 4200.0,
+      "discount": 24,
+      "category": "women",
+      "image": "https://images.unsplash.com/photo-1520975915824-445fca094479?w=800&h=800&fit=crop",
+      "description": "Lightweight midi dress with flowy fabric perfect for warm evenings."
+    },
+    {
+      "id": 3,
+      "name": "Safari Travel Backpack",
+      "price": 2800.0,
+      "originalPrice": 3350.0,
+      "discount": 16,
+      "category": "bags",
+      "image": "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=800&h=800&fit=crop",
+      "description": "Durable travel backpack with smart storage for city or safari days."
+    },
+    {
+      "id": 4,
+      "name": "Nairobi Runner Sneakers",
+      "price": 4200.0,
+      "originalPrice": 5200.0,
+      "discount": 19,
+      "category": "shoes",
+      "image": "https://images.unsplash.com/photo-1519741494781-8d7d5a2487c2?w=800&h=800&fit=crop",
+      "description": "Comfortable sneakers designed for style and all-day wear."
+    },
+    {
+      "id": 5,
+      "name": "Gold Accent Necklace",
+      "price": 1150.0,
+      "originalPrice": 1500.0,
+      "discount": 23,
+      "category": "accessories",
+      "image": "https://images.unsplash.com/photo-1512314889357-e157c22f938d?w=800&h=800&fit=crop",
+      "description": "Statement necklace finished with polished metallic details."
+    }
+  ],
+  "users": [],
+  "cart": [],
+  "orders": []
+}
