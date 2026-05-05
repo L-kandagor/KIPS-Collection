@@ -81,7 +81,13 @@
       updateCartCount();
       
       document.getElementById('checkoutBtn').addEventListener('click', async () => {
-        const total = parseFloat(document.getElementById('cartTotal').textContent.replace('$', ''));
+        if (!localStorage.getItem('user')) {
+          alert('Please login to place an order.');
+          window.location.href = 'login.html';
+          return;
+        }
+
+        const total = parseFloat(document.getElementById('cartTotal').textContent.replace('KES ', '').replace(/,/g, ''));
         try {
           await fetch('/api/orders', {
             method: 'POST',
