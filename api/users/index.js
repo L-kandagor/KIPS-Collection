@@ -1,12 +1,16 @@
-const { loadDb, sendJson } = require('../../lib/db');
+const { connectToDatabase, User, sendJson, sendError } = require('../../lib/db');
 
 module.exports = async (req, res) => {
   if (req.method !== 'GET') {
-    res.statusCode = 405;
-    res.setHeader('Allow', 'GET');
-    return res.end('Method not allowed');
+    return sendError(res, 405, 'Method not allowed');
   }
 
-  const db = await loadDb();
-  sendJson(res, 200, db.users);
+  try {
+    await connectToDatabase();
+    const users = await User.find({});
+    sendJson(res, 200, users.map(u => ({ id: u._id, name: u.name, email: u.email })));
+  } catch (error) {
+    console.error(error);
+    sendError(res, 500, 'Internal server error');
+  }
 };

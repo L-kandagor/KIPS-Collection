@@ -1,4 +1,4 @@
-const { loadDb, writeDb, sendJson, sendError } = require('../../../lib/db');
+const { connectToDatabase, CartItem, sendJson, sendError } = require('../../../lib/db');
 
 module.exports = async (req, res) => {
   if (req.method !== 'PUT') {
@@ -11,19 +11,24 @@ module.exports = async (req, res) => {
     return sendError(res, 400, 'Quantity must be a number');
   }
 
-  const db = await loadDb();
-  const index = db.cart.findIndex((item) => item.productId === parseInt(productId, 10));
+  try {
+    await connectToDatabase();
+    const item = await CartItem.findOne({ productId: parseInt(productId, 10) });
 
-  if (index === -1) {
-    return sendError(res, 404, 'Cart item not found');
+    if (!item) {
+      return sendError(res, 404, 'Cart item not found');
+    }
+
+    if (quantity <= 0) {
+      await CartItem.deleteOne({ _id: item._id });
+    } else {
+      item.quantity = quantity;
+      await item.save();
+    }
+
+    sendJson(res, 200, { message: 'Cart updated' });
+  } catch (error) {
+    console.error(error);
+    sendError(res, 500, 'Internal server error');
   }
-
-  if (quantity <= 0) {
-    db.cart.splice(index, 1);
-  } else {
-    db.cart[index].quantity = quantity;
-  }
-
-  await writeDb(db);
-  sendJson(res, 200, { message: 'Cart updated' });
 };

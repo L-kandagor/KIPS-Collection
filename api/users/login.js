@@ -1,4 +1,4 @@
-const { loadDb, sendJson, sendError } = require('../../lib/db');
+const { connectToDatabase, User, sendJson, sendError } = require('../../lib/db');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
@@ -10,15 +10,20 @@ module.exports = async (req, res) => {
     return sendError(res, 400, 'Email and password are required');
   }
 
-  const db = await loadDb();
-  const user = db.users.find((u) => u.email === email && u.password === password);
-  if (!user) {
-    return sendError(res, 401, 'Invalid credentials');
-  }
+  try {
+    await connectToDatabase();
+    const user = await User.findOne({ email, password });
+    if (!user) {
+      return sendError(res, 401, 'Invalid credentials');
+    }
 
-  sendJson(res, 200, {
-    message: 'Login successful',
-    user,
-    token: 'fake-jwt-token',
-  });
+    sendJson(res, 200, {
+      message: 'Login successful',
+      user: { id: user._id, name: user.name, email: user.email },
+      token: 'fake-jwt-token',
+    });
+  } catch (error) {
+    console.error(error);
+    sendError(res, 500, 'Internal server error');
+  }
 };

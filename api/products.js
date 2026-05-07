@@ -1,18 +1,23 @@
-const { loadDb, writeDb, sendJson, sendError } = require('../lib/db');
+const { connectToDatabase, Product, sendJson, sendError } = require('../lib/db');
 
 module.exports = async (req, res) => {
-  const db = await loadDb();
+  try {
+    await connectToDatabase();
 
-  if (req.method === 'GET') {
-    return sendJson(res, 200, db.products);
+    if (req.method === 'GET') {
+      const products = await Product.find({});
+      return sendJson(res, 200, products.map(p => ({ id: p._id, ...p.toObject() })));
+    }
+
+    if (req.method === 'POST') {
+      const newProduct = new Product(req.body || {});
+      await newProduct.save();
+      return sendJson(res, 201, { id: newProduct._id, ...newProduct.toObject() });
+    }
+
+    return sendError(res, 405, 'Method not allowed');
+  } catch (error) {
+    console.error(error);
+    sendError(res, 500, 'Internal server error');
   }
-
-  if (req.method === 'POST') {
-    const newProduct = { id: Date.now(), ...(req.body || {}) };
-    db.products.push(newProduct);
-    await writeDb(db);
-    return sendJson(res, 201, newProduct);
-  }
-
-  return sendError(res, 405, 'Method not allowed');
 };

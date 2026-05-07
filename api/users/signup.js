@@ -1,4 +1,4 @@
-const { loadDb, writeDb, sendJson, sendError } = require('../../lib/db');
+const { connectToDatabase, User, sendJson, sendError } = require('../../lib/db');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
@@ -10,21 +10,19 @@ module.exports = async (req, res) => {
     return sendError(res, 400, 'Name, email, and password are required');
   }
 
-  const db = await loadDb();
-  const existingUser = db.users.find((user) => user.email === email);
-  if (existingUser) {
-    return sendError(res, 400, 'User already exists');
+  try {
+    await connectToDatabase();
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return sendError(res, 400, 'User already exists');
+    }
+
+    const newUser = new User({ name, email, password });
+    await newUser.save();
+
+    sendJson(res, 201, { message: 'User created', user: { id: newUser._id, name, email } });
+  } catch (error) {
+    console.error(error);
+    sendError(res, 500, 'Internal server error');
   }
-
-  const newUser = {
-    id: Date.now(),
-    name,
-    email,
-    password,
-  };
-
-  db.users.push(newUser);
-  await writeDb(db);
-
-  sendJson(res, 201, { message: 'User created', user: newUser });
 };

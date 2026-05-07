@@ -1,32 +1,34 @@
-const { loadDb, writeDb, sendJson, sendError } = require('../../lib/db');
+const { connectToDatabase, Product, sendJson, sendError } = require('../../lib/db');
 
 module.exports = async (req, res) => {
-  const { id } = req.query;
-  const db = await loadDb();
-  const productId = parseInt(id, 10);
-  const product = db.products.find((item) => item.id === productId);
+  try {
+    await connectToDatabase();
+    const { id } = req.query;
+    const product = await Product.findById(id);
 
-  if (!product) {
-    return sendError(res, 404, 'Product not found');
+    if (!product) {
+      return sendError(res, 404, 'Product not found');
+    }
+
+    if (req.method === 'GET') {
+      return sendJson(res, 200, { id: product._id, ...product.toObject() });
+    }
+
+    if (req.method === 'PUT') {
+      Object.assign(product, req.body || {});
+      await product.save();
+      return sendJson(res, 200, { id: product._id, ...product.toObject() });
+    }
+
+    if (req.method === 'DELETE') {
+      await Product.findByIdAndDelete(id);
+      res.statusCode = 204;
+      return res.end();
+    }
+
+    return sendError(res, 405, 'Method not allowed');
+  } catch (error) {
+    console.error(error);
+    sendError(res, 500, 'Internal server error');
   }
-
-  if (req.method === 'GET') {
-    return sendJson(res, 200, product);
-  }
-
-  if (req.method === 'PUT') {
-    const updatedProduct = { ...product, ...(req.body || {}) };
-    db.products = db.products.map((item) => (item.id === productId ? updatedProduct : item));
-    await writeDb(db);
-    return sendJson(res, 200, updatedProduct);
-  }
-
-  if (req.method === 'DELETE') {
-    db.products = db.products.filter((item) => item.id !== productId);
-    await writeDb(db);
-    res.statusCode = 204;
-    return res.end();
-  }
-
-  return sendError(res, 405, 'Method not allowed');
 };

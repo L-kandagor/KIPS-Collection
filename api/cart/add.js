@@ -1,4 +1,4 @@
-const { loadDb, writeDb, sendJson, sendError } = require('../../lib/db');
+const { connectToDatabase, CartItem, sendJson, sendError } = require('../../lib/db');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
@@ -17,14 +17,20 @@ module.exports = async (req, res) => {
     return sendError(res, 400, 'Quantity must be a positive number');
   }
 
-  const db = await loadDb();
-  const existingItem = db.cart.find((item) => item.productId === productId);
-  if (existingItem) {
-    existingItem.quantity += quantity;
-  } else {
-    db.cart.push({ productId, quantity });
-  }
+  try {
+    await connectToDatabase();
+    let existingItem = await CartItem.findOne({ productId });
+    if (existingItem) {
+      existingItem.quantity += quantity;
+      await existingItem.save();
+    } else {
+      const newItem = new CartItem({ productId, quantity });
+      await newItem.save();
+    }
 
-  await writeDb(db);
-  sendJson(res, 200, { message: 'Added to cart' });
+    sendJson(res, 200, { message: 'Added to cart' });
+  } catch (error) {
+    console.error(error);
+    sendError(res, 500, 'Internal server error');
+  }
 };

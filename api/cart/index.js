@@ -1,10 +1,16 @@
-const { loadDb, sendJson, sendError } = require('../../lib/db');
+const { connectToDatabase, CartItem, sendJson, sendError } = require('../../lib/db');
 
 module.exports = async (req, res) => {
   if (req.method !== 'GET') {
     return sendError(res, 405, 'Method not allowed');
   }
 
-  const db = await loadDb();
-  sendJson(res, 200, db.cart);
+  try {
+    await connectToDatabase();
+    const cart = await CartItem.find({});
+    sendJson(res, 200, cart.map(item => item.toObject()));
+  } catch (error) {
+    console.error(error);
+    sendError(res, 500, 'Internal server error');
+  }
 };

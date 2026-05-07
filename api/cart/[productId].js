@@ -1,4 +1,4 @@
-const { loadDb, writeDb, sendJson, sendError } = require('../../lib/db');
+const { connectToDatabase, CartItem, sendJson, sendError } = require('../../lib/db');
 
 module.exports = async (req, res) => {
   if (req.method !== 'DELETE') {
@@ -6,10 +6,14 @@ module.exports = async (req, res) => {
   }
 
   const { productId } = req.query;
-  const db = await loadDb();
-  db.cart = db.cart.filter((item) => item.productId !== parseInt(productId, 10));
-  await writeDb(db);
 
-  res.statusCode = 204;
-  res.end();
+  try {
+    await connectToDatabase();
+    await CartItem.deleteOne({ productId: parseInt(productId, 10) });
+    res.statusCode = 204;
+    res.end();
+  } catch (error) {
+    console.error(error);
+    sendError(res, 500, 'Internal server error');
+  }
 };
