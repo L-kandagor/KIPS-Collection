@@ -1,16 +1,24 @@
-const { connectToDatabase, User, sendJson, sendError } = require('../../lib/db');
+const { connectToDatabase, parseBody, User, sendJson, sendError } = require('../../lib/db');
 
 module.exports = async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   if (req.method !== 'POST') {
     return sendError(res, 405, 'Method not allowed');
   }
 
-  const { email, password } = req.body || {};
-  if (!email || !password) {
-    return sendError(res, 400, 'Email and password are required');
-  }
-
   try {
+    const body = await parseBody(req);
+    const { email, password } = body;
+    if (!email || !password) {
+      return sendError(res, 400, 'Email and password are required');
+    }
+
     await connectToDatabase();
     const user = await User.findOne({ email, password });
     if (!user) {
@@ -23,7 +31,7 @@ module.exports = async (req, res) => {
       token: 'fake-jwt-token',
     });
   } catch (error) {
-    console.error(error);
+    console.error('Login error:', error);
     sendError(res, 500, 'Internal server error');
   }
 };

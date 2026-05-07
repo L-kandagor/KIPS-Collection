@@ -1,6 +1,13 @@
 const { connectToDatabase, Product, User } = require('../lib/db');
 
 module.exports = async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   try {
     await connectToDatabase();
     
@@ -17,6 +24,7 @@ module.exports = async (req, res) => {
       const existing = await Product.findOne({ name: p.name });
       if (!existing) {
         await new Product(p).save();
+        console.log(`Seeded: ${p.name}`);
       }
     }
     
@@ -24,11 +32,12 @@ module.exports = async (req, res) => {
     const adminUser = await User.findOne({ email: 'admin@kips.com' });
     if (!adminUser) {
       await new User({ name: 'Admin', email: 'admin@kips.com', password: 'admin' }).save();
+      console.log('Seeded admin user');
     }
     
-    res.json({ message: 'Seeded products and admin user' });
+    res.status(200).json({ message: 'Seeded products and admin user' });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Seeding failed' });
+    console.error('Seed error:', error);
+    res.status(500).json({ error: 'Seeding failed', details: error.message });
   }
 };

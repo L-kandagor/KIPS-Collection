@@ -1,6 +1,13 @@
-const { connectToDatabase, Product, sendJson, sendError } = require('../../lib/db');
+const { connectToDatabase, parseBody, Product, sendJson, sendError } = require('../../lib/db');
 
 module.exports = async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   try {
     await connectToDatabase();
     const { id } = req.query;
@@ -15,7 +22,8 @@ module.exports = async (req, res) => {
     }
 
     if (req.method === 'PUT') {
-      Object.assign(product, req.body || {});
+      const body = await parseBody(req);
+      Object.assign(product, body || {});
       await product.save();
       return sendJson(res, 200, { id: product._id, ...product.toObject() });
     }
@@ -28,7 +36,7 @@ module.exports = async (req, res) => {
 
     return sendError(res, 405, 'Method not allowed');
   } catch (error) {
-    console.error(error);
+    console.error('Product detail error:', error);
     sendError(res, 500, 'Internal server error');
   }
 };

@@ -1,16 +1,24 @@
-const { connectToDatabase, User, sendJson, sendError } = require('../../lib/db');
+const { connectToDatabase, parseBody, User, sendJson, sendError } = require('../../lib/db');
 
 module.exports = async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   if (req.method !== 'POST') {
     return sendError(res, 405, 'Method not allowed');
   }
 
-  const { name, email, password } = req.body || {};
-  if (!name || !email || !password) {
-    return sendError(res, 400, 'Name, email, and password are required');
-  }
-
   try {
+    const body = await parseBody(req);
+    const { name, email, password } = body;
+    if (!name || !email || !password) {
+      return sendError(res, 400, 'Name, email, and password are required');
+    }
+
     await connectToDatabase();
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -22,7 +30,7 @@ module.exports = async (req, res) => {
 
     sendJson(res, 201, { message: 'User created', user: { id: newUser._id, name, email } });
   } catch (error) {
-    console.error(error);
+    console.error('Signup error:', error);
     sendError(res, 500, 'Internal server error');
   }
 };
