@@ -142,6 +142,13 @@
   <script src="js/main.js"></script>
   <script src="js/admin.js"></script>
   <script>
+    // Check if admin is logged in
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    if (!user || user.email !== 'admin@kips.com') {
+      alert('Access denied. Admin only.');
+      window.location.href = 'index.html';
+    }
+    
     document.addEventListener('DOMContentLoaded', async () => {
       await loadAdminData();
       setupAdminEvents();

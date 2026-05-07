@@ -47,6 +47,11 @@
   <script src="js/cart.js"></script>
   <script src="js/products.js"></script>
   <script>
+    // Check if user is logged in
+    if (!localStorage.getItem('user')) {
+      window.location.href = 'login.html';
+    }
+    
     document.addEventListener('DOMContentLoaded', async () => {
       await loadProducts();
       setupFilters();

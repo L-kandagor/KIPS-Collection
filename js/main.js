@@ -46,9 +46,20 @@ function updateAuthNav() {
   if (user) {
     userIcon.innerHTML = `<span style="font-size:0.9rem; font-weight:700;">Hi, ${user.name}</span>`;
     userIcon.title = `Logged in as ${user.name}`;
+    userIcon.href = '#';
+    userIcon.onclick = (e) => {
+      e.preventDefault();
+      if (confirm('Logout?')) {
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+        window.location.href = 'index.html';
+      }
+    };
   } else {
     userIcon.innerHTML = `<i class="fas fa-user"></i>`;
     userIcon.title = 'Login';
+    userIcon.href = 'login.html';
+    userIcon.onclick = null;
   }
 }
 
