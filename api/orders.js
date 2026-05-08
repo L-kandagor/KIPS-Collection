@@ -24,8 +24,9 @@ module.exports = async (req, res) => {
       }
 
       const cartItems = await CartItem.find({});
+      const items = cartItems.map(item => ({ productId: item.productId, quantity: item.quantity }));
       const order = new Order({
-        items: cartItems,
+        items,
         total,
         timestamp: new Date(),
       });

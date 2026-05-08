@@ -1,4 +1,4 @@
-const { connectToDatabase, parseBody, User, sendJson, sendError } = require('../../lib/db');
+const { connectToDatabase, parseBody, User, sendJson, sendError, verifyPassword } = require('../../lib/db');
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -20,8 +20,8 @@ module.exports = async (req, res) => {
     }
 
     await connectToDatabase();
-    const user = await User.findOne({ email, password });
-    if (!user) {
+    const user = await User.findOne({ email });
+    if (!user || !verifyPassword(password, user.password)) {
       return sendError(res, 401, 'Invalid credentials');
     }
 

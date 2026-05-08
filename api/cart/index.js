@@ -15,7 +15,7 @@ module.exports = async (req, res) => {
   try {
     await connectToDatabase();
     const cart = await CartItem.find({});
-    sendJson(res, 200, cart.map(item => item.toObject()));
+    sendJson(res, 200, cart.map(item => ({ id: item._id, ...item.toObject() })));
   } catch (error) {
     console.error('Cart error:', error);
     sendError(res, 500, 'Internal server error');

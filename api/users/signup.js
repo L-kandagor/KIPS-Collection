@@ -1,4 +1,4 @@
-const { connectToDatabase, parseBody, User, sendJson, sendError } = require('../../lib/db');
+const { connectToDatabase, parseBody, User, sendJson, sendError, hashPassword } = require('../../lib/db');
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -22,13 +22,18 @@ module.exports = async (req, res) => {
     await connectToDatabase();
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return sendError(res, 400, 'User already exists');
+      return sendError(res, 409, 'User already exists');
     }
 
-    const newUser = new User({ name, email, password });
+    const hashedPassword = hashPassword(password);
+    const newUser = new User({ name, email, password: hashedPassword });
     await newUser.save();
 
-    sendJson(res, 201, { message: 'User created', user: { id: newUser._id, name, email } });
+    sendJson(res, 201, { 
+      message: 'User created', 
+      user: { id: newUser._id, name, email },
+      token: 'fake-jwt-token'
+    });
   } catch (error) {
     console.error('Signup error:', error);
     sendError(res, 500, 'Internal server error');

@@ -1,4 +1,25 @@
-// Authentication functions
+// Base API URL — points to your backend
+const API_BASE = window.location.origin + '/api';
+
+// Generic API request helper
+async function apiRequest(path, options = {}) {
+  const url = API_BASE + path;
+  const res = await fetch(url, {
+    headers: { 'Content-Type': 'application/json' },
+    ...options
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.error || `Request failed (${res.status})`);
+  }
+
+  return data;
+}
+
+// ─── Auth Functions ───────────────────────────────────────────────────────────
+
 async function signupUser(name, email, password) {
   const response = await apiRequest('/users/signup', {
     method: 'POST',
@@ -12,8 +33,8 @@ async function loginUser(email, password) {
     method: 'POST',
     body: JSON.stringify({ email, password })
   });
-  
-  // Store user session
+
+  // Store session
   localStorage.setItem('user', JSON.stringify(response.user));
   localStorage.setItem('token', response.token);
   return response;
@@ -33,6 +54,7 @@ function getCurrentUser() {
 function logout() {
   localStorage.removeItem('user');
   localStorage.removeItem('token');
+  window.location.href = 'login.html';
 }
 
 // Update nav based on auth state
